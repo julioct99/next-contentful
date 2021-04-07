@@ -1,7 +1,37 @@
-export interface RecipesProps {}
+import React from 'react';
+import { createClient, Entry } from 'contentful';
+import { GetStaticProps } from 'next';
+import RecipeCard from '../components/RecipeCard';
 
-const Recipes: React.FC<RecipesProps> = () => {
-  return <div className='recipe-list'>Recipe List</div>;
+export const getStaticProps: GetStaticProps<RecipesProps> = async () => {
+  const client = createClient({
+    space: process.env.CONTENTFUL_SPACE_ID,
+    accessToken: process.env.CONTENTFUL_API_KEY,
+  });
+
+  const res = await client.getEntries({ content_type: 'recipe' });
+
+  return {
+    props: {
+      recipes: res.items,
+    },
+  };
+};
+
+export interface RecipesProps {
+  recipes: Entry<unknown>[] | any;
+}
+
+const Recipes: React.FC<RecipesProps> = ({ recipes }) => {
+  console.log(recipes);
+
+  return (
+    <div className='recipe-list'>
+      {recipes.map((recipe) => (
+        <RecipeCard recipe={recipe} key={recipe.sys.id} />
+      ))}
+    </div>
+  );
 };
 
 export default Recipes;
