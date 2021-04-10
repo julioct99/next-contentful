@@ -30,6 +30,14 @@ const Recipes: React.FC<RecipesProps> = ({ recipes }) => {
       {recipes.map((recipe) => (
         <RecipeCard recipe={recipe} key={recipe.sys.id} />
       ))}
+
+      <style jsx>{`
+        .recipe-list {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-gap: 20px 60px;
+        }
+      `}</style>
     </div>
   );
 };
