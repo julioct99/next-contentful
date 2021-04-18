@@ -2,6 +2,8 @@ import Image from 'next/image';
 import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import React from 'react';
+import Skeleton from '../../components/Skeleton';
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID,
@@ -15,7 +17,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params: { slug: item.fields.slug },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: true };
 };
 
 export const getStaticProps: GetStaticProps<RecipeDetailsProps> = async ({ params }) => {
@@ -35,6 +37,8 @@ export interface RecipeDetailsProps {
 }
 
 const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
+  if (!recipe) return <Skeleton></Skeleton>;
+
   const { featuredImage, title, cookingTime, ingredients, method } = recipe.fields;
 
   return (
